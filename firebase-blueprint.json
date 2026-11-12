@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "UserProfile": {
+      "collection": "users",
+      "documentId": "userId",
+      "fields": {
+        "userId": { "type": "string", "required": true },
+        "currentElo": { "type": "number", "required": true },
+        "highestElo": { "type": "number", "required": true },
+        "puzzlesSolved": { "type": "number", "required": true },
+        "puzzlesFailed": { "type": "number", "required": true },
+        "accuracyPercent": { "type": "number", "required": true },
+        "streakDays": { "type": "number", "required": true },
+        "displayName": { "type": "string", "required": false },
+        "email": { "type": "string", "required": false },
+        "createdAt": { "type": "timestamp", "required": false },
+        "updatedAt": { "type": "timestamp", "required": false }
+      }
+    },
+    "TrainingSession": {
+      "collection": "users/{userId}/sessions",
+      "documentId": "sessionId",
+      "fields": {
+        "userId": { "type": "string", "required": true },
+        "sessionType": { "type": "string", "required": true },
+        "category": { "type": "string", "required": true },
+        "solvedCount": { "type": "number", "required": true },
+        "totalCount": { "type": "number", "required": true },
+        "eloChange": { "type": "number", "required": true },
+        "durationSeconds": { "type": "number", "required": true },
+        "accuracyPercent": { "type": "number", "required": true },
+        "createdAt": { "type": "timestamp", "required": false }
+      }
+    },
+    "SavedGame": {
+      "collection": "users/{userId}/saved_games",
+      "documentId": "gameId",
+      "fields": {
+        "userId": { "type": "string", "required": true },
+        "title": { "type": "string", "required": true },
+        "pgnOrMoves": { "type": "string", "required": true },
+        "fen": { "type": "string", "required": true },
+        "evaluation": { "type": "string", "required": false },
+        "userNotes": { "type": "string", "required": false },
+        "createdAt": { "type": "timestamp", "required": false }
+      }
+    },
+    "PuzzleProgress": {
+      "collection": "users/{userId}/progress",
+      "documentId": "puzzleId",
+      "fields": {
+        "userId": { "type": "string", "required": true },
+        "puzzleId": { "type": "string", "required": true },
+        "solvedCorrectly": { "type": "boolean", "required": true },
+        "attempts": { "type": "number", "required": true },
+        "timeSeconds": { "type": "number", "required": true },
+        "createdAt": { "type": "timestamp", "required": false }
+      }
+    }
+  }
+}

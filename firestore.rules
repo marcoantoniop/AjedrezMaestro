@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(data) {
+      return data.userId == request.auth.uid &&
+             data.currentElo is number &&
+             data.highestElo is number;
+    }
+
+    function isValidSession(data, userId) {
+      return data.userId == userId &&
+             data.sessionType is string &&
+             data.category is string &&
+             data.solvedCount is number &&
+             data.totalCount is number &&
+             data.eloChange is number;
+    }
+
+    function isValidSavedGame(data, userId) {
+      return data.userId == userId &&
+             data.title is string &&
+             data.fen is string;
+    }
+
+    function isValidProgress(data, userId) {
+      return data.userId == userId &&
+             data.puzzleId is string &&
+             data.solvedCorrectly is bool;
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidUser(request.resource.data);
+      allow delete: if isOwner(userId);
+
+      match /sessions/{sessionId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidSession(request.resource.data, userId);
+        allow delete: if isOwner(userId);
+      }
+
+      match /saved_games/{gameId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidSavedGame(request.resource.data, userId);
+        allow delete: if isOwner(userId);
+      }
+
+      match /progress/{puzzleId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidProgress(request.resource.data, userId);
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}
